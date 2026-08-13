@@ -57,7 +57,9 @@ function WidgetFrame({ kind }) {
       bridge.onopenlink = async ({ url }) => { window.open(url, "_blank", "noopener,noreferrer"); return {}; };
       bridge.onmessage = async () => ({});
       bridge.onupdatemodelcontext = async () => ({});
-      bridge.onsizechange = async ({ height }) => { if (height) iframe.style.height = `${Math.min(720, Math.max(360, height))}px`; };
+      // The Harness panel owns the viewport. Let the Widget scroll inside that
+      // stable frame instead of letting content-driven resize overflow it.
+      bridge.onsizechange = async () => {};
       bridge.onrequestdisplaymode = async ({ mode }) => ({ mode });
       const initialized = new Promise((resolve) => { bridge.oninitialized = resolve; });
       await bridge.connect(new PostMessageTransport(iframe.contentWindow, iframe.contentWindow));
@@ -72,9 +74,9 @@ function WidgetFrame({ kind }) {
     run();
     return () => { bridge?.close(); };
   }, [kind, widgetUrl]);
-  return <div style={{ position: "relative" }}>
+  return <div style={{ position: "relative", flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}>
     {status && <div role="status" style={{ position: "absolute", inset: "18px auto auto 18px", zIndex: 2, color: "#9eb7ae", fontSize: 13 }}>{status}</div>}
-    <iframe key={kind} ref={iframeRef} title={`Kling AI ${kind} Widget`} sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads" style={{ width: "100%", height: 620, border: 0, borderRadius: 14, background: "#111715" }} />
+    <iframe key={kind} ref={iframeRef} title={`Kling AI ${kind} Widget`} sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads" style={{ display: "block", width: "100%", height: "100%", border: 0, borderRadius: 14, background: "#111715" }} />
   </div>;
 }
 
@@ -82,8 +84,8 @@ function KlingOverlay() {
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState("generation");
   return <div style={{ pointerEvents: "auto", position: "fixed", right: 24, bottom: 24, zIndex: 10000, fontFamily: "Inter, system-ui, sans-serif" }}>
-    {open && <section aria-label="Kling AI Widget 面板" style={{ width: "min(1040px, calc(100vw - 48px))", height: "min(820px, calc(100vh - 110px))", marginBottom: 14, padding: 14, border: "1px solid #315a4f", borderRadius: 18, background: "#0d1412", boxShadow: "0 24px 80px rgba(0,0,0,.55)", color: "#eef8f4" }}>
-      <header style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+    {open && <section aria-label="Kling AI Widget 面板" style={{ boxSizing: "border-box", position: "fixed", inset: 24, width: "min(960px, calc(100vw - 48px))", height: "calc(100vh - 48px)", margin: "auto", padding: 14, display: "flex", flexDirection: "column", overflow: "hidden", border: "1px solid #315a4f", borderRadius: 18, background: "#0d1412", boxShadow: "0 24px 80px rgba(0,0,0,.55)", color: "#eef8f4" }}>
+      <header style={{ display: "flex", flex: "0 0 auto", flexWrap: "wrap", alignItems: "center", gap: 12, marginBottom: 12 }}>
         <div><strong style={{ fontSize: 18 }}>Kling AI · MCP Apps</strong><div style={{ fontSize: 12, color: "#8eaaa1" }}>DeepSeek Harness 本地适配 · 不消耗生成额度</div></div>
         <nav style={{ display: "flex", gap: 6, marginLeft: "auto" }}>{tabs.map(([id, label]) => <button key={id} onClick={() => setKind(id)} style={{ border: "1px solid #34584f", borderRadius: 9, padding: "7px 11px", color: id === kind ? "#0a1713" : "#c7d8d2", background: id === kind ? "#74e0bd" : "#17211e", cursor: "pointer" }}>{label}</button>)}</nav>
         <button aria-label="关闭 Kling Widget" onClick={() => setOpen(false)} style={{ border: 0, color: "#b8ccc5", background: "transparent", fontSize: 24, cursor: "pointer" }}>×</button>
