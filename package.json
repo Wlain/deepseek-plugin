@@ -1,0 +1,35 @@
+{
+  "name": "kling-ai-deepseek-harness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "lib/client.js",
+    "cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "inject": ["@deepseek-ai/dsh-client-runtime"],
+      "platform": "web"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build-client.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.7.5",
+    "esbuild": "^0.25.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  }
+}
