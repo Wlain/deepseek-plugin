@@ -16,5 +16,3 @@
           - http-only
         toolCallTimeoutMs: 600000
         failOnStartupError: false
-    - id: kling-ai-widget
-      name: kling-ai-deepseek-harness

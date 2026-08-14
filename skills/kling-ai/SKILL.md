@@ -1,6 +1,6 @@
 ---
 name: kling-ai
-description: 使用真实 Kling OAuth MCP 服务生成或查询图片、视频。适用于可灵生成、任务状态、额度、素材上传；计费提交前必须让用户确认。
+description: 使用可灵 MCP，创作高质量图片与视频。适用于可灵生成、任务状态、额度和素材上传；计费提交前必须让用户确认。
 ---
 
 # Kling AI for DeepSeek Harness
@@ -36,8 +36,6 @@ host limitation; do not invent a second OAuth flow or continue authorization.
 
 ## 示例
 
-```
-生成一张 16:9 的雨夜东京街头电影海报。
-使用我附上的产品图生成一个 5 秒竖屏视频。
-只查询一次 generationId <id> 的任务状态。
-```
+- 画一只坐在霓虹屋顶上的赛博朋克风格猫
+- 制作一个 5 秒的电影感视频：夕阳映照海边，镜头轻柔移动
+- 制作一条无线耳机产品宣传视频：干净的影棚灯光，镜头缓慢环绕

@@ -1,12 +1,14 @@
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-await access(resolve(root, "mcp-app/exports/image-video-generation.html"));
-await access(resolve(root, "mcp-app/exports/upload.html"));
-await access(resolve(root, "mcp-app/exports/showcase.html"));
-const client = await readFile(resolve(root, "lib/client.js"), "utf8");
-for (const marker of ["kling-ai-deepseek-harness", "sendToolResult", "sendHostContextChange", "ResizeObserver", "shell.overlay", "tool.call.toolview", "mcp__kling-ai__", "query_tasks"]) {
-  if (!client.includes(marker)) throw new Error(`Missing built marker: ${marker}`);
+const files = ["index.js", "cordis.patch.yml", "skills/kling-ai/SKILL.md", "package.json"];
+for (const file of files) {
+  const text = await readFile(resolve(root, file), "utf8");
+  if (/mcp-app|kling[-_]mcp-app/u.test(text)) {
+    throw new Error(`${file} must not depend on the local MCP App`);
+  }
 }
-console.log("DeepSeek Harness Kling Widget bundle is valid.");
+const patch = await readFile(resolve(root, "cordis.patch.yml"), "utf8");
+if (!patch.includes("https://klingai.com/mcp")) throw new Error("Remote Kling MCP URL is missing");
+console.log("DeepSeek Kling remote MCP plugin is valid.");
