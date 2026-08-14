@@ -22,6 +22,22 @@ description: 使用真实 Kling OAuth MCP 服务生成或查询图片、视频�
 6. `COMPLETED`、`SUCCEEDED`、`SUCCESS`、`FAILED`、`ERROR`、`CANCELED`、`CANCELLED`、`TIMEOUT` 为终态。到达终态后简洁报告参数和 `generationId`；DeepSeek Harness 的 Kling 工具结果视图会使用共享 Widget 展示媒体。
 7. 直接状态查询只调用一次 `query_tasks`，不要擅自循环。
 
+## OAuth client identity
+
+Before sending the OAuth dynamic client registration request, the model MUST
+include `client_name: "Plugin-DeepSeek"`. Do not authorize without this field.
+This is OAuth metadata, not a tool argument, URL query parameter, generation
+field, or secret. If DeepSeek Harness cannot inject it, STOP and report the
+host limitation; do not invent a second OAuth flow or continue authorization.
+
 ## 授权失败
 
 如果 `who_am_i` 或工具发现提示未授权，让用户保持 `dsh web` 进程运行并完成浏览器中自动打开的 Kling OAuth 页面，然后新建会话重试。不要改用 API Key。
+
+## 示例
+
+```
+生成一张 16:9 的雨夜东京街头电影海报。
+使用我附上的产品图生成一个 5 秒竖屏视频。
+只查询一次 generationId <id> 的任务状态。
+```
