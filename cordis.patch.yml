@@ -11,7 +11,7 @@
         args:
           - -y
           - mcp-remote@latest
-          - https://kling-ai.prt.kuaishou.com/mcp
+          - https://klingai.com/mcp
           - --transport
           - http-only
         toolCallTimeoutMs: 600000

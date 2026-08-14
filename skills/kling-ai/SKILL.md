@@ -7,7 +7,7 @@ description: 使用真实 Kling OAuth MCP 服务生成或查询图片、视频�
 
 ## 工具边界
 
-- 真实联调服务为 `https://kling-ai.prt.kuaishou.com/mcp`。工具使用 `mcp__kling-ai__` 前缀，包括账号/额度、素材上传、图片和视频生成、动作控制、任务查询、主体 CRUD 与动作库查询；以实时工具目录和 schema 为准。
+- 真实联调服务为 `https://klingai.com/mcp`。工具使用 `mcp__kling-ai__` 前缀，包括账号/额度、素材上传、图片和视频生成、动作控制、任务查询、主体 CRUD 与动作库查询；以实时工具目录和 schema 为准。
 - `text_to_image`、`image_to_image`、`text_to_video`、`image_to_video` 是消耗额度的写操作。
 - 不得要求用户在聊天中粘贴 API Key、Token、Cookie 或授权头。授权由本机 `mcp-remote` 的标准 OAuth 浏览器流程完成。
 - 不要在说明、日志或错误消息里展开签名输出 URL；结果卡片或一个兼容链接可以承载 URL。
