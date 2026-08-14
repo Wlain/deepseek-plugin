@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Create high-quality images and videos with Kling MCP",
+  "description": "Build your own AI creative workflow with Kling MCP",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
@@ -16,7 +16,7 @@
   ],
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
-    "descriptionZh": "使用可灵 MCP，创作高质量图片与视频"
+    "descriptionZh": "用可灵MCP打造独属于你的 AI 创作工作流。"
   },
   "scripts": {
     "check": "node scripts/check.mjs",

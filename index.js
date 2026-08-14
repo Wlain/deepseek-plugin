@@ -10,7 +10,7 @@ export function apply(ctx) {
   const skillContent = skillSource.replace(/^---\n[\s\S]*?\n---\n/, "");
   return ctx.skills.register({
     name: "kling-ai",
-    description: "使用可灵 MCP，创作高质量图片与视频。提交消耗积分的生成任务前必须等待用户确认。",
+    description: "用可灵MCP打造独属于你的 AI 创作工作流。提交消耗积分的生成任务前必须等待用户确认。",
     content: skillContent,
     path: skillPath,
   });
