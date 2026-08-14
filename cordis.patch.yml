@@ -1,3 +1,20 @@
+- id: tool-skill
+  disabled: false
+
 - insert:
+    - id: kling-ai-remote
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: kling-ai
+        transport: stdio
+        command: npx
+        args:
+          - -y
+          - mcp-remote@latest
+          - https://kling-ai.prt.kuaishou.com/mcp
+          - --transport
+          - http-only
+        toolCallTimeoutMs: 600000
+        failOnStartupError: false
     - id: kling-ai-widget
       name: kling-ai-deepseek-harness

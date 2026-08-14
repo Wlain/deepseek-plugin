@@ -5,5 +5,7 @@
 - Install with `dsh plugin --profile web add ./deepseek/kling-ai`.
 - Start `dsh web` and verify the **Kling Widget** overlay.
 - Verify generation, upload, and showcase tabs all render their corresponding shared HTML.
-- Keep the demo deterministic and local; it must not invoke a billable Kling generation tool.
+- Complete the browser OAuth flow and verify `mcp__kling-ai__who_am_i` succeeds without exposing credentials.
+- Verify `/kling-ai` is discoverable and requires confirmation before every billable generation tool.
+- Verify a non-billable `query_tasks` response is rendered by the keyed Kling tool view; keep the overlay demo deterministic and local.
 - Record the current Harness limitation: its official MCP client bridges tools but has no MCP resource consumer, so the client slot adapter remains required.

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 export const name = "kling-ai-deepseek-harness";
-export const inject = ["webServer"];
+export const inject = ["webServer", "skills"];
 
 const sourceFiles = [
   ["/kling-ai-widgets/generation", "./mcp-app/exports/image-video-generation.html"],
@@ -35,6 +35,15 @@ for (const [path, relative] of sourceFiles) {
 }
 
 export function apply(ctx) {
+  const skillPath = fileURLToPath(new URL("./skills/kling-ai/SKILL.md", import.meta.url));
+  const skillSource = readFileSync(skillPath, "utf8");
+  const skillContent = skillSource.replace(/^---\n[\s\S]*?\n---\n/, "");
+  const disposeSkill = ctx.skills.register({
+    name: "kling-ai",
+    description: "通过真实 Kling OAuth MCP 服务创建、查询图片和视频，并在提交计费任务前等待用户确认。",
+    content: skillContent,
+    path: skillPath,
+  });
   const disposers = [...resources].map(([path, resource]) => ctx.webServer.register({
     kind: "exact",
     path,
@@ -46,5 +55,8 @@ export function apply(ctx) {
       res.end(resource.body);
     },
   }));
-  return () => disposers.forEach((dispose) => dispose());
+  return () => {
+    disposeSkill();
+    disposers.forEach((dispose) => dispose());
+  };
 }

@@ -12,7 +12,8 @@
   "files": [
     "index.js",
     "lib/client.js",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "skills/kling-ai/SKILL.md"
   ],
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
