@@ -23,8 +23,10 @@
   },
   "scripts": {
     "build": "node scripts/build-client.mjs",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "test": "npm run check"
   },
+  "engines": { "node": ">=20" },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.7.5",
     "esbuild": "^0.25.0"

@@ -44,8 +44,12 @@ function WidgetFrame({ kind }) {
     const iframe = iframeRef.current;
     if (!iframe) return;
     let bridge;
+    let resizeObserver;
+    let themeObserver;
     const connect = async () => {
       setStatus("正在进行 MCP Apps 握手…");
+      const theme = document.body.hasAttribute("data-ds-dark-theme") ? "dark" : "light";
+      const dimensions = { width: iframe.clientWidth || 930, maxHeight: iframe.clientHeight || 592 };
       const server = {
         getServerCapabilities: () => ({ tools: {} }),
         request: async () => ({ content: [{ type: "text", text: "DeepSeek Harness local Widget demo" }] }),
@@ -53,7 +57,7 @@ function WidgetFrame({ kind }) {
       };
       bridge = new AppBridge(server, { name: "kling-ai-deepseek-harness", version: "0.1.0" }, {
         openLinks: {}, serverTools: {}, updateModelContext: { text: {} },
-      }, { hostContext: { theme: "dark", platform: "web", displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"], containerDimensions: { width: 980, maxHeight: 760 } } });
+      }, { hostContext: { theme, platform: "web", displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"], containerDimensions: dimensions } });
       bridge.onopenlink = async ({ url }) => { window.open(url, "_blank", "noopener,noreferrer"); return {}; };
       bridge.onmessage = async () => ({});
       bridge.onupdatemodelcontext = async () => ({});
@@ -65,6 +69,16 @@ function WidgetFrame({ kind }) {
       await bridge.connect(new PostMessageTransport(iframe.contentWindow, iframe.contentWindow));
       iframe.src = widgetUrl;
       await initialized;
+      resizeObserver = new ResizeObserver(([entry]) => {
+        const width = Math.round(entry.contentRect.width);
+        const maxHeight = Math.round(entry.contentRect.height);
+        if (width > 0 && maxHeight > 0) void bridge.sendHostContextChange({ containerDimensions: { width, maxHeight } });
+      });
+      resizeObserver.observe(iframe);
+      themeObserver = new MutationObserver(() => {
+        void bridge.sendHostContextChange({ theme: document.body.hasAttribute("data-ds-dark-theme") ? "dark" : "light" });
+      });
+      themeObserver.observe(document.body, { attributes: true, attributeFilter: ["data-ds-dark-theme"] });
       await bridge.sendToolInput({ arguments: { demo: true, view: kind } });
       const structuredContent = demoResult(kind);
       await bridge.sendToolResult({ content: [{ type: "text", text: "Kling AI 本地演示结果" }], structuredContent });
@@ -72,7 +86,7 @@ function WidgetFrame({ kind }) {
     };
     const run = () => connect().catch((error) => setStatus(`Widget 连接失败：${error instanceof Error ? error.message : String(error)}`));
     run();
-    return () => { bridge?.close(); };
+    return () => { resizeObserver?.disconnect(); themeObserver?.disconnect(); bridge?.close(); };
   }, [kind, widgetUrl]);
   return <div style={{ position: "relative", flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}>
     {status && <div role="status" style={{ position: "absolute", inset: "18px auto auto 18px", zIndex: 2, color: "#9eb7ae", fontSize: 13 }}>{status}</div>}
