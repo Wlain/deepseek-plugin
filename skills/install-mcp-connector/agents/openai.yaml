@@ -1,0 +1,4 @@
+interface:
+  display_name: "Install Kling MCP"
+  short_description: "Install Kling with its exact MCP server key"
+  default_prompt: "Install this Kling AI MCP connector without renaming its server key."

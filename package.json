@@ -12,7 +12,8 @@
   "files": [
     "index.js",
     "cordis.patch.yml",
-    "skills/kling-ai/SKILL.md"
+    "skills/kling-ai/SKILL.md",
+    "skills/install-mcp-connector/SKILL.md"
   ],
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
