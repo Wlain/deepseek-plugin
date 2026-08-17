@@ -1,6 +1,6 @@
 # Kling AI for DeepSeek Harness
 
-DeepSeek Harness 完整插件：通过 Harness 官方 MCP tools bridge 和 `mcp-remote` 的标准 OAuth 流程连接联调服务 `https://klingai.com/mcp`，并通过官方 MCP Apps `AppBridge` 将仓库中唯一一份 `mcp-app/exports` Widget 挂载到 Harness Web UI。
+DeepSeek Harness 完整插件：通过 Harness 官方 MCP tools bridge 和 `mcp-remote` 的标准 OAuth 流程连接区域服务，并通过官方 MCP Apps `AppBridge` 将仓库中唯一一份 `mcp-app/exports` Widget 挂载到 Harness Web UI。国内使用 `cordis.patch.yml`（`https://klingai.com/mcp`），海外使用 `cordis.global.patch.yml`（`https://kling.ai/mcp`）；只能应用一份 patch，切区前先断开旧 OAuth。
 
 ```bash
 npm install && npm run build && npm run check

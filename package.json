@@ -11,6 +11,7 @@
   },
   "files": [
     "index.js",
+    "cordis.global.patch.yml",
     "cordis.patch.yml",
     "skills/kling-ai/SKILL.md",
     "skills/install-kling-ai-plugin/SKILL.md"

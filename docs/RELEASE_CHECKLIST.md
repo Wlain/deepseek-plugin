@@ -3,6 +3,7 @@
 - Build and validate the client bundle: `npm install && npm run build && npm run check`.
 - Confirm `mcp-app` is a symbolic link to the repository's shared app.
 - Install with `dsh plugin --profile web add ./deepseek/kling-ai`.
+- Validate China `cordis.patch.yml` and Global `cordis.global.patch.yml` in separate profiles; exactly one regional bridge may be active.
 - Start `dsh web` and verify the **Kling Widget** overlay.
 - Verify generation, upload, and showcase tabs all render their corresponding shared HTML.
 - Complete the browser OAuth flow and verify `mcp__kling-ai__who_am_i` succeeds without exposing credentials.
