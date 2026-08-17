@@ -5,7 +5,7 @@
     - id: kling-ai-remote
       name: '@deepseek-ai/dsh-mcp-client'
       config:
-        serverName: kling-ai
+        serverName: Plugin-DeepSeek-kling-ai
         transport: stdio
         command: npx
         args:
