@@ -1,9 +1,9 @@
 ---
-name: install-mcp-connector
+name: install-kling-ai-plugin
 description: Install, refresh, or troubleshoot the Kling AI DeepSeek Harness MCP integration. Use when applying the Cordis patch, checking the remote MCP client, or reconnecting OAuth. Preserve the configured serverName exactly.
 ---
 
-# Install the Kling MCP connector in DeepSeek Harness
+# Install the Kling AI plugin in DeepSeek Harness
 
 1. Treat `cordis.patch.yml` as the source of truth.
 2. Preserve the exact `serverName: Plugin-DeepSeek-kling-ai`, remote endpoint, transport, and timeout fields. Do not reconstruct them from memory.
