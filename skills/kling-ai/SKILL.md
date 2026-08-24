@@ -19,7 +19,7 @@ description: 用可灵MCP打造独属于你的 AI 创作工作流。适用于可
 3. 在任何计费生成调用前，向用户列出模型、提示词、时长或分辨率、宽高比和数量，并明确说明会消耗额度，等待用户确认。
 4. 每个已确认意图只调用一次对应生成工具。超时或返回不确定时不要自动重提，先按 `taskTraceId` 或 `generationId` 查询。
 5. 提交成功后保存 `generationId`，约每 10 秒调用一次 `query_tasks`，最长间隔不得超过 15 秒。任务处于 `QUEUING`、`QUEUED`、`PROCESSING`、`RUNNING`、`GENERATING` 时不要结束当前轮次。
-6. `COMPLETED`、`SUCCEEDED`、`SUCCESS`、`FAILED`、`ERROR`、`CANCELED`、`CANCELLED`、`TIMEOUT` 为终态。到达终态后简洁报告参数和 `generationId`；DeepSeek Harness 的 Kling 工具结果视图会使用共享 Widget 展示媒体。
+6. `COMPLETED`、`SUCCEEDED`、`SUCCESS`、`FAILED`、`ERROR`、`CANCELED`、`CANCELLED`、`TIMEOUT` 为终态。到达终态后简洁报告参数和 `generationId`；DeepSeek Harness 的 Kling 工具结果视图会使用共享 MCP App Widget 展示媒体，并作为唯一媒体预览。不要在 Widget 外添加 Markdown 图片/视频语法、额外媒体附件或缩略图、重复下载链接；只有 Widget 未渲染时，才使用同一次调用的文本回落和一个主结果链接。
 7. 直接状态查询只调用一次 `query_tasks`，不要擅自循环。
 
 ## OAuth client identity
