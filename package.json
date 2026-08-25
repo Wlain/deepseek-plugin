@@ -22,7 +22,9 @@
   },
   "scripts": {
     "check": "node scripts/check.mjs",
-    "test": "npm run check"
+    "test": "npm run check",
+    "verify:bridge": "node scripts/verify-mcp-remote-oauth.mjs",
+    "verify:installed": "node scripts/verify-dsh-runtime.mjs"
   },
   "engines": { "node": ">=20" },
   "dependencies": {}

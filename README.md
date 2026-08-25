@@ -1,29 +1,66 @@
 # Kling AI for DeepSeek Harness
 
-DeepSeek Harness 完整插件：通过 Harness 官方 MCP tools bridge 和 `mcp-remote` 的标准 OAuth 流程连接区域服务，并通过官方 MCP Apps `AppBridge` 将仓库中唯一一份 `mcp-app/exports` Widget 挂载到 Harness Web UI。国内使用 `cordis.patch.yml`（`https://klingai.com/mcp`），海外使用 `cordis.global.patch.yml`（`https://kling.ai/mcp`）；只能应用一份 patch，切区前先断开旧 OAuth。
+DeepSeek Harness 插件通过 Harness 官方 MCP tools bridge 和固定版本
+`mcp-remote` 的标准 OAuth 流程连接区域服务。安装包默认插入国内
+`cordis.patch.yml`（`https://klingai.com/mcp`）；海外
+`cordis.global.patch.yml`（`https://kling.ai/mcp`）是对同一个
+`kling-ai-remote` 节点的替换 overlay，不会再插入第二个客户端。切区前先停止
+旧 DSH 进程并断开旧 OAuth。
 
 ```bash
-npm install && npm run build && npm run check
-dsh plugin --profile web add ./deepseek/kling-ai
+cd /absolute/path/to/kling-ai-plugin/deepseek/kling-ai
+npm install
+npm run check
+npm run verify:bridge
+npm run verify:installed
+dsh plugin --profile web add "$PWD"
+# 国内（安装后的默认区域）
 dsh web --host 127.0.0.1 --port 3080
+
+# 海外（从仓库目录执行；overlay 必须位于 web 子命令之前）
+dsh --profile web --patch "$PWD/cordis.global.patch.yml" --host 127.0.0.1 --port 3080
 ```
 
-首次启动时 `mcp-remote` 会打开浏览器完成 Kling OAuth。保持 `dsh web` 进程运行，完成授权后新建 Harness 会话，输入 `/kling-ai` 加载计费安全流程。真实工具名使用 `mcp__kling-ai__*` 前缀。
+`verify:bridge` 只使用本地假 OAuth/MCP；`verify:installed` 只在临时
+`DSH_HOME` 内安装和合成配置，不读取或改写现有 Harness profile。
 
-Harness 官方 MCP 客户端目前仅桥接 tools，不消费 resources。因此本适配器同时使用：
+不要在已安装国内 bundle 的 profile 上使用另一份 `insert` patch。海外模板按
+DSH 的后置 overlay 语义原位替换已安装节点，因此合成结果仍只有一个
+`Plugin-DeepSeek-kling-ai`。运行 `dsh --profile web --patch
+"$PWD/cordis.global.patch.yml" --dump-config` 可在授权前检查有效配置；输出中应只
+出现所选区域 URL。切回国内时停止海外进程并恢复普通 `dsh web` 启动。
 
-- `tool.call.toolview`：把真实生成和 `query_tasks` 结果在聊天流中交给共享生成 Widget 渲染；
-- `shell.overlay`：承载三个确定性本地 Widget，供无额度 UI 验证，右下角入口为 **Kling Widget**。
+首次启动时 `mcp-remote` 会打开浏览器完成 Kling OAuth。两份 patch 都通过
+`--static-oauth-client-metadata` 固定 DCR `client_name` 为
+`Plugin-DeepSeek`，携带 `X-Kling-Integration: Plugin-DeepSeek`，并把 callback
+等待时间从上游默认 30 秒延长到 180 秒。保持
+`dsh web` 进程运行，完成授权后新建 Harness 会话，输入 `/kling-ai`
+加载计费安全流程。真实工具名使用
+`mcp__Plugin-DeepSeek-kling-ai__*` 前缀。
 
-联调服务当前声明的 UI 映射为：`ui://kling/work-viewer.html` → `image-video-generation.html`、`ui://kling/upload-file.html` → `upload.html`、`ui://kling/element-list.html` → `showcase.html`。
-
-真实生成会消耗 Kling 额度；Skill 强制要求在生成工具调用前展示参数并等待用户确认。右下角本地预览不会调用真实服务。
-
-当前联调阶段的三个 HTML 均直接读取仓库本地 `mcp-app/exports/`；本插件不会上传或修改远端 UI。验证通过后再由发布流程把同一批构建产物上传到联调 MCP 服务对应的 UI resource。
+Harness 官方 MCP 客户端 0.0.1-rc.1 目前只桥接 tools，不消费 MCP
+resources，也没有已验证的 MCP Apps 容器。因此本发布包不注册自制
+`tool.call.toolview`、overlay 或本地 HTML。真实生成会消耗 Kling 额度；Skill
+在生成前展示参数并等待确认。结果使用同一次远端工具调用的文本/resource
+回落与最多一个主媒体链接，直到官方客户端支持并验收 MCP resources。
 
 ## 跨平台呈现契约
 
-- Widget 的内容、媒体操作、主题和安全区行为来自唯一共享的 `mcp-app`，与 Codex、Cursor、WorkBuddy 等支持 MCP Apps 的宿主一致。
-- Harness 适配层只负责提供 iframe 容器，并把实时尺寸与明暗主题通过标准 host context 传给 App；内容驱动的尺寸变化在 iframe 内滚动，不得撑破宿主面板。
-- 面板使用 `border-box` 在视口内居中；三份 Widget 共用同一容器，不按页面分别维护尺寸常量。
-- Harness 官方 MCP 客户端增加 resources consumer 后，应删除这层资源路由兼容代码，直接消费 `_meta.ui.resourceUri`。
+- 不复制或链接仓库根目录的本地 `mcp-app/`，不把未发布的 prototype 当成
+  运行时能力。
+- Harness 官方 MCP 客户端增加 resources consumer 后，直接消费远端
+  `_meta.ui.resourceUri`；通过真实目标构建验收前不声明 Widget 可用。
+
+## OAuth bridge 边界
+
+本包固定 `mcp-remote@0.2.0`，不使用会随时间漂移的 `@latest`。仓库的
+`npm run verify:bridge` 会用本地假 OAuth/MCP 服务验证 protected-resource
+discovery、动态注册、`Plugin-DeepSeek` 客户端名、S256 PKCE、token endpoint、
+Bearer 重试和 `tools/list`；测试不会打开真实浏览器、读取凭据或调用 Kling。
+
+上游仍有运行中 access/refresh token 同时失效后 callback listener 未重建的
+[问题 #248](https://github.com/geelen/mcp-remote/issues/248)，以及异常退出后旧
+callback 端口冲突的[问题 #253](https://github.com/geelen/mcp-remote/issues/253)。
+遇到授权过期时先停止并重新启动 `dsh web`，只完成新进程打开的一次授权。
+不要反复点击多个旧授权页，也不要直接分享 `~/.mcp-auth` 或 `--debug` 产生的
+原始日志；其中可能包含 OAuth 状态和敏感诊断信息。

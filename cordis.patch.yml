@@ -10,9 +10,15 @@
         command: npx
         args:
           - -y
-          - mcp-remote@latest
+          - mcp-remote@0.2.0
           - https://klingai.com/mcp
           - --transport
           - http-only
+          - --static-oauth-client-metadata
+          - '{"client_name":"Plugin-DeepSeek"}'
+          - --header
+          - 'X-Kling-Integration:Plugin-DeepSeek'
+          - --auth-timeout
+          - '180'
         toolCallTimeoutMs: 600000
         failOnStartupError: false
