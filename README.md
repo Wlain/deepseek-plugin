@@ -8,7 +8,8 @@ DeepSeek Harness 插件通过 Harness 官方 MCP tools bridge 和固定版本
 旧 DSH 进程并断开旧 OAuth。
 
 ```bash
-cd /absolute/path/to/kling-ai-plugin/deepseek/kling-ai
+git clone https://github.com/Wlain/kling-ai-deepseek-plugin.git
+cd kling-ai-deepseek-plugin
 npm install
 npm run check
 npm run verify:bridge
@@ -19,6 +20,12 @@ dsh web --host 127.0.0.1 --port 3080
 
 # 海外（从仓库目录执行；overlay 必须位于 web 子命令之前）
 dsh --profile web --patch "$PWD/cordis.global.patch.yml" --host 127.0.0.1 --port 3080
+```
+
+也可以直接从 GitHub 安装国内默认区域：
+
+```bash
+dsh plugin --profile web add github:Wlain/kling-ai-deepseek-plugin
 ```
 
 `verify:bridge` 只使用本地假 OAuth/MCP；`verify:installed` 只在临时

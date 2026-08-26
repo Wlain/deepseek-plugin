@@ -4,6 +4,11 @@
   "private": true,
   "type": "module",
   "description": "Build your own AI creative workflow with Kling MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wlain/kling-ai-deepseek-plugin.git"
+  },
+  "license": "MIT",
   "main": "index.js",
   "exports": {
     ".": "./index.js",

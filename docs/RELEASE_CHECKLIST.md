@@ -10,7 +10,8 @@
   row for Global without reading or modifying the user's profile.
 - Confirm the package and install archive contain no `mcp-app`, client bundle,
   local HTML, tool-view override, or overlay.
-- Install with `dsh plugin --profile web add ./deepseek/kling-ai`.
+- Install with `dsh plugin --profile web add github:Wlain/kling-ai-deepseek-plugin`,
+  then repeat from a local checkout with `dsh plugin --profile web add "$PWD"`.
 - Install the package into an isolated profile, then validate ordinary startup
   for China and the later `cordis.global.patch.yml` replacement overlay for
   Global. Each composed tree must contain exactly one `kling-ai-remote` row and
