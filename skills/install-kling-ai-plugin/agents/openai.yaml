@@ -1,4 +1,0 @@
-interface:
-  display_name: "Install Kling AI Plugin"
-  short_description: "Install the plugin with its exact MCP server key"
-  default_prompt: "Install this Kling AI plugin without renaming its MCP server key."

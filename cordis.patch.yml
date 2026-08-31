@@ -2,6 +2,9 @@
   disabled: false
 
 - insert:
+    - id: kling-ai-skill
+      name: kling-ai-deepseek-harness
+
     - id: kling-ai-remote
       name: '@deepseek-ai/dsh-mcp-client'
       config:

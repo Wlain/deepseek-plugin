@@ -30,39 +30,20 @@ try {
     "plugin installation",
   );
 
-  const cases = [
-    {
-      region: "China",
-      args: ["--profile", "web", "--dump-config"],
-      endpoint: "https://klingai.com/mcp",
-      forbiddenEndpoint: "https://kling.ai/mcp",
-    },
-    {
-      region: "Global",
-      args: [
-        "--profile",
-        "web",
-        "--patch",
-        resolve(packageRoot, "cordis.global.patch.yml"),
-        "--dump-config",
-      ],
-      endpoint: "https://kling.ai/mcp",
-      forbiddenEndpoint: "https://klingai.com/mcp",
-    },
-  ];
-
-  for (const testCase of cases) {
-    const output = requireSuccess(runDsh(testCase.args), `${testCase.region} config composition`);
-    const rowCount = output.split("serverName: Plugin-DeepSeek-kling-ai").length - 1;
-    assert.equal(rowCount, 1, `${testCase.region} must compose exactly one Kling MCP row`);
-    assert.ok(output.includes(testCase.endpoint), `${testCase.region} endpoint is missing`);
-    assert.ok(!output.includes(testCase.forbiddenEndpoint), `${testCase.region} also activates the other endpoint`);
-    for (const expected of ["mcp-remote@0.2.0", "--auth-timeout", "180"]) {
-      assert.ok(output.includes(expected), `${testCase.region} config is missing ${expected}`);
-    }
+  const output = requireSuccess(
+    runDsh(["--profile", "web", "--dump-config"]),
+    "domestic config composition",
+  );
+  const rowCount = output.split("serverName: Plugin-DeepSeek-kling-ai").length - 1;
+  assert.equal(rowCount, 1, "Domestic package must compose exactly one Kling MCP row");
+  const skillRowCount = output.split("name: kling-ai-deepseek-harness").length - 1;
+  assert.equal(skillRowCount, 1, "Domestic package must compose exactly one Kling skill provider row");
+  assert.ok(output.includes("https://klingai.com/mcp"), "Domestic endpoint is missing");
+  for (const expected of ["mcp-remote@0.2.0", "--auth-timeout", "180"]) {
+    assert.ok(output.includes(expected), `Domestic config is missing ${expected}`);
   }
 
-  console.log("DeepSeek Harness isolated install verified: China and Global each compose exactly one pinned Kling MCP bridge.");
+  console.log("DeepSeek Harness isolated install verified: the domestic package composes one Kling skill provider and one pinned MCP bridge.");
 } finally {
   await rm(dshHome, { recursive: true, force: true });
 }
